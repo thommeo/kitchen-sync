@@ -92,13 +92,10 @@ module Kitchen
         def upload(locals, remote)
           Array(locals).each do |local|
             full_remote = File.join(remote, File.basename(local))
-            options = {
-              recursive: File.directory?(local),
-              purge: File.basename(local) != 'cache',
-            }
             recursive = File.directory?(local)
+            purge = File.basename(local) != 'cache'
             time = Benchmark.realtime do
-              sftp_upload!(local, full_remote, options)
+              sftp_upload!(local, full_remote, recursive: recursive, purge: purge)
             end
             logger.info("[SFTP] Time taken to upload #{local} to #{self}:#{full_remote}: %.2f sec" % time)
           end
